@@ -23,44 +23,67 @@ function extractSocialMediaLinks(html) {
     return socialMediaLinks;
 }
 
+// Function to extract address or location from HTML content
+function extractAddress(html) {
+    const $ = cheerio.load(html);
+    const addresses = [];
+    $('address').each(function () {
+        addresses.push($(this).text().trim());
+    });
+    return addresses;
+}
+
 // Path to the CSV file
 const csvFilePath = path.join(__dirname, 'sample-websites.csv');
+const writeFilePath = path.join(__dirname, 'extracted-data.csv');
 
 // Read the CSV file
 const csvData = fs.readFileSync(csvFilePath, 'utf8');
+fs.appendFileSync(writeFilePath,'Website URL,Phone Numbers,Social Media Links,Locations\n');
+
 
 // Parse CSV data
 const websites = Papa.parse(csvData, { header: true }).data;
 
-const crawled = 0;
-const dataPoints = 0;
+let crawled = 0;
+let phones = 0;
+let socials = 0;
+let locs = 0;
+const extractedData = [];
 
 // Extract data from each website
 websites.forEach(async (row) => {
-    const websiteUrl = row['domain'];
+    let websiteUrl = row['domain'];
     try {
         // Access the website
-        const response = await axios.get(`http://${websiteUrl}`);
+        let response = await axios.get(`http://${websiteUrl}`);
 
         // Check if request was successful
         if (response.status === 200) {
             // Parse HTML content
-            const html = response.data;
+            let html = response.data;
             // Extract phone numbers
-            const phoneNumbers = extractPhoneNumbers(html);
+            let phoneNumbers = extractPhoneNumbers(html);
+
+            // Extract addresses
+            let addresses = extractAddress(html);
 
             // Extract social media links
-            const socialMediaLinks = extractSocialMediaLinks(html);
+            let socialMediaLinks = extractSocialMediaLinks(html);
 
             // Output extracted data
-
             console.log(`Website: ${websiteUrl}`);
             console.log('Phone Numbers:', phoneNumbers);
+            console.log('Addresses:', addresses);
             console.log('Social Media Links:', socialMediaLinks);
             console.log('------------------------------------------');
             crawled++;
-            dataPoints += phoneNumbers || 0;
-            dataPoints += socialMediaLinks || 0;
+            phones += (phoneNumbers ? 1 : 0);
+            socials += (socialMediaLinks ? 1 : 0);
+            locs += (addresses ? 1 : 0);
+
+            fs.appendFileSync(writeFilePath, `${websiteUrl},${phoneNumbers},${socialMediaLinks},${addresses}\n`);
+
         } else {
             console.log(`Failed to access ${websiteUrl}. Status code: ${response.status}`);
         }
@@ -68,8 +91,3 @@ websites.forEach(async (row) => {
         console.log(`Error accessing ${websiteUrl}: ${error.message}`);
     }
 });
-
-console.log(`Crawled websites: ${crawled}`);
-console.log(`Datapoints crawled (fill rates): ${dataPoints}`)
-
-// Step 4: Store or process the extracted data as needed
