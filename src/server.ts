@@ -1,15 +1,21 @@
-import express, { Express, Request, Response } from "express";
-import dotenv from "dotenv";
-
-dotenv.config();
+import express, { Express } from "express";
+import * as bodyParser from "body-parser";
+import { CompanyController } from "./controllers/CompanyController";
+import { Configuration, IExpressConfig } from "./models/configuration/Configuration";
 
 const app: Express = express();
+const config: IExpressConfig = Configuration.getInstance().getExpressConfig()
 const port = process.env.PORT || 3000;
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript Server");
+// Configuration
+app.use(bodyParser.json()); // Body parser middleware
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    res.header("Content-Type", "application/json");
+    next();
 });
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+app.use(`/companies`, CompanyController);
+
+app.listen(config.port, () => {
+  console.log(`Started the server on port ${config.port}`);
 });
