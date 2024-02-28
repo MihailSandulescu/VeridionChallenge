@@ -1,0 +1,9 @@
+local:
+  express:
+    port: 3000
+test:
+  express:
+    port: 3000
+prod:
+  express:
+    port: 80
