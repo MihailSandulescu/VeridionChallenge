@@ -3,7 +3,6 @@
  */
 
 import { Request, Response, Router } from "express";
-import { Company } from "../models/CompanyDTO";
 import { CompanyService } from "../services/CompanyService";
 import HTTPError from "../models/exceptions/HTTPError";
 
