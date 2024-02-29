@@ -49,7 +49,6 @@ let crawled = 0;
 let phones = 0;
 let socials = 0;
 let locs = 0;
-const extractedData = [];
 
 // Extract data from each website
 websites.forEach(async (row) => {
