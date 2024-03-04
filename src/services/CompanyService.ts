@@ -7,13 +7,13 @@ import HTTPError from "../models/exceptions/HTTPError";
 import { Client } from '@elastic/elasticsearch';
 
 /**
- * Service class for manipulating [[Companie]]s
+ * Service class for manipulating Companies
  */
 export class CompanyService {
 
     /**
-     * Retrieves all [[Companie]]s from elastic
-     * @returns Promise<[[Company]]>
+     * Retrieves all Companies from elastic
+     * @returns Promise<>
      */
     public static async getCompanies(name:any, website: any, phoneNumber: any, facebookProfile: any): Promise<any> {
         const endpoint = process.env.ELASTICSEARCH_ENDPOINT;
