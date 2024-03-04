@@ -1,5 +1,4 @@
 import express, { Express } from "express";
-import * as bodyParser from "body-parser";
 import { CompanyController } from "./controllers/CompanyController";
 import { Configuration, IExpressConfig } from "./models/configuration/Configuration";
 
@@ -8,7 +7,6 @@ const config: IExpressConfig = Configuration.getInstance().getExpressConfig()
 const port = process.env.PORT || 3000;
 
 // Configuration
-app.use(bodyParser.json()); // Body parser middleware
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
     res.header("Content-Type", "application/json");
     next();
